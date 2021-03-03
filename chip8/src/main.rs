@@ -14,14 +14,14 @@ use tinyvec::*;
 use tokio::time;
 
 /// CHIP-8 implementation in Rust.
-pub struct CHIP8 {
+struct CHIP8 {
     /// Memory for the CHIP-8.
     ///
     /// All memory is considered RAM and therefore writable. We use 4KB
     /// (4096 bytes) because the index register and program counter can only address 12 bits (4096
     /// addresses).
     ///
-    /// The first 512 bits are reserved (0x000..0x200).
+    /// The first 512 bits are reserved (`0x0..0x200`).
     pub memory: [u8; 4096],
 
     /// Display for the CHIP-8.
@@ -35,7 +35,7 @@ pub struct CHIP8 {
 
     /// Variable register for the CHIP-8.
     ///
-    /// These are numbered `0x0-0xF` and referenced as V0-VF. `VF` is also used as a flag register
+    /// These are numbered `0x0..=0xF` and referenced as `V0..=VF`. `VF` is also used as a flag register
     /// based on some rule.
     pub variable: [u8; 16],
 
@@ -100,7 +100,7 @@ impl CHIP8 {
     }
 
     /// Fetches an instruction from the current program counter.
-    pub fn fetch(&mut self) -> (u8, u8) {
+    fn fetch(&mut self) -> (u8, u8) {
         let instr_one = self.memory[self.program_counter as usize];
         self.program_counter += 1;
 
@@ -111,7 +111,7 @@ impl CHIP8 {
     }
 
     /// Decodes and executes the given instruction.
-    pub fn decode_execute(&mut self, instruction: (u8, u8)) {
+    fn decode_execute(&mut self, instruction: (u8, u8)) {
         // nibble 1. type of instruction.
         let itype: u8 = (instruction.0 & 0xF0) >> 4;
         // nibble 2. Used to look up one of 16 registers V0-VF.
